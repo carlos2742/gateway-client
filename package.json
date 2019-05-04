@@ -5,6 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 -env=dev",
+    "startMem": "ng serve --host 0.0.0.0 -env=mem",
     "build": "ng build --prod",
     "test": "ng test -sm=false",
     "lint": "ng lint",

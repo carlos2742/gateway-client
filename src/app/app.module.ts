@@ -14,6 +14,7 @@ import { FormGwComponent } from './components/form-gw/form-gw.component';
 import {DevicesService} from './services/devices.service';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import {HttpClientModule} from '@angular/common/http';
+import {MemClientService} from './services/mem-client.service';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import {HttpClientModule} from '@angular/common/http';
   ],
   providers: [
     GatewaysService,
-    DevicesService
+    DevicesService,
+    MemClientService
   ],
   bootstrap: [AppComponent]
 })
