@@ -10,13 +10,13 @@ export class MemClientService {
   constructor() {
     this.gateways = [
       {
-        _id: 'qwerty',
+        _id: 'q3er4ty6yu',
         serial: '537G',
         name: 'Europe',
         ipv4: '10.0.0.1'
       },
       {
-        _id: 'asdfg',
+        _id: '6yutj78df5',
         serial: '79HX',
         name: 'America',
         ipv4: '10.0.0.2'
@@ -24,7 +24,7 @@ export class MemClientService {
     ];
     this.devices = [
       {
-        _id: 'zxcv',
+        _id: 'df5gn80ml9',
         uid: 1,
         vendor: 'Huawei',
         created: new Date(),
@@ -32,14 +32,14 @@ export class MemClientService {
         gateway: this.gateways[0]._id
       },
       {
-        _id: 'yuiop',
+        _id: 'mkl9uiozaq',
         uid: 2,
         vendor: 'Cisco',
         created: new Date(),
         status: 'offline',
         gateway: this.gateways[0]._id
       }, {
-        _id: 'hjkln',
+        _id: 'zaq2scvgtyu',
         uid: 3,
         vendor: 'Cisco',
         created: new Date(),
@@ -47,6 +47,12 @@ export class MemClientService {
         gateway: this.gateways[1]._id
       }
     ];
+  }
+
+  private generateUniqueIdFor(list: Array<any>) {
+    const newId = Math.random().toString(36).slice(-10);
+    const exist = list.find(item => item._id === newId);
+    return !exist ? newId : this.generateUniqueIdFor(list);
   }
 
   private createObservableResult(data) {
@@ -80,7 +86,7 @@ export class MemClientService {
       return this.createObservableResult({status: 'danger', message: 'Gateway serial must be unique.'});
     }
     const newGateway = data;
-    data['_id'] = 'yhnuj';
+    data['_id'] = this.generateUniqueIdFor(this.gateways);
     this.gateways.push(newGateway);
     return this.createObservableResult({status: 'success', result: newGateway});
   }
@@ -109,7 +115,7 @@ export class MemClientService {
 
   public addDevice(gatewayId, data) {
     const newDevice = data;
-    data['_id'] = 'yhnuj';
+    data['_id'] = this.generateUniqueIdFor(this.gateways);
     data['created'] = new Date();
     data['gateway'] = gatewayId;
     this.devices.push(newDevice);
