@@ -34,13 +34,20 @@ jobs:
           name: Install dependencies
           command: npm install
       - run:
-          name: Show current branch
-          command: echo ${CIRCLE_BRANCH}
-      - run:
-          name: Exec Test
+          name: Test
           command: npm test
+      - run:
+          name: Build
+          command: npm run build
+      - run:
+          name: Deploy Master to Firebase
+          command: npm run firebase-deploy -- --token=$FIREBASE_TOKEN
 
       - save_cache:
           paths:
             - node_modules
+            - dist
+            - package.json
+            - firebase.json
+            - .firebaserc
           key: v1-dependencies-{{ checksum "package.json" }}
