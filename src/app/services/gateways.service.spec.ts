@@ -1,12 +1,12 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { GatewaysService } from './gateways.service';
-import {HttpClient, HttpHandler} from '@angular/common/http';
+import {MemClientService} from './mem-client.service';
 
 describe('GatewaysService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [GatewaysService, HttpClient, HttpHandler]
+      providers: [GatewaysService, MemClientService]
     });
   });
 

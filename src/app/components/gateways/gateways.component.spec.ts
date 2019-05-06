@@ -1,13 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GatewaysComponent } from './gateways.component';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FormGwComponent} from '../form-gw/form-gw.component';
 import {Component, Input} from '@angular/core';
 import {FormGroup} from '@angular/forms';
-import {RouterModule} from '@angular/router';
 import {GatewaysService} from '../../services/gateways.service';
+import {MemClientService} from '../../services/mem-client.service';
+import {RouterTestingModule} from '@angular/router/testing';
 
 @Component({selector: 'form', template: ''})
 class FormStubComponent {
@@ -21,8 +21,8 @@ describe('GatewaysComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ GatewaysComponent, FormGwComponent, FormStubComponent],
-      imports: [RouterModule, NgbModule.forRoot(), HttpClientTestingModule],
-      providers: [GatewaysService]
+      imports: [RouterTestingModule, NgbModule.forRoot()],
+      providers: [GatewaysService, MemClientService]
     })
     .compileComponents();
   }));

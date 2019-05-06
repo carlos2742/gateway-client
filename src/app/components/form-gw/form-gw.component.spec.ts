@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGwComponent } from './form-gw.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {GatewaysService} from '../../services/gateways.service';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {MemClientService} from '../../services/mem-client.service';
 
 describe('FormGwComponent', () => {
   let component: FormGwComponent;
@@ -12,8 +12,8 @@ describe('FormGwComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ FormGwComponent ],
-      imports: [HttpClientTestingModule, ReactiveFormsModule],
-      providers: [GatewaysService]
+      imports: [ReactiveFormsModule],
+      providers: [GatewaysService, MemClientService]
     })
     .compileComponents();
   }));

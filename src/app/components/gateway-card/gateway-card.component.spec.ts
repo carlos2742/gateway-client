@@ -1,14 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GatewayCardComponent } from './gateway-card.component';
-import { Injectable, Input} from '@angular/core';
 import {FormDevComponent} from '../form-dev/form-dev.component';
 import { ReactiveFormsModule} from '@angular/forms';
 import {DevicesService} from '../../services/devices.service';
 import {GatewaysService} from '../../services/gateways.service';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ActivatedRoute} from '@angular/router';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {MemClientService} from '../../services/mem-client.service';
 
 describe('GatewayCardComponent', () => {
   let component: GatewayCardComponent;
@@ -17,10 +16,11 @@ describe('GatewayCardComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ GatewayCardComponent, FormDevComponent],
-      imports: [ ReactiveFormsModule, HttpClientTestingModule, NgbModule.forRoot()],
+      imports: [ ReactiveFormsModule, NgbModule.forRoot()],
       providers: [
         DevicesService,
         GatewaysService,
+        MemClientService,
         {
           provide: ActivatedRoute,
           useValue: {

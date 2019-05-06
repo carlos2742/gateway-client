@@ -3,8 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormDevComponent } from './form-dev.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {DevicesService} from '../../services/devices.service';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {GatewaysService} from '../../services/gateways.service';
+import {MemClientService} from '../../services/mem-client.service';
 
 describe('FormDevComponent', () => {
   let component: FormDevComponent;
@@ -13,8 +13,8 @@ describe('FormDevComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ FormDevComponent ],
-      imports: [ReactiveFormsModule, HttpClientTestingModule],
-      providers: [DevicesService, GatewaysService]
+      imports: [ReactiveFormsModule],
+      providers: [DevicesService, GatewaysService, MemClientService]
     })
     .compileComponents();
   }));
