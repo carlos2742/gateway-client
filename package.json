@@ -7,6 +7,7 @@
     "start": "ng serve --host 0.0.0.0 -env=dev",
     "build": "ng build --prod",
     "test": "ng test -sm=false --watch=false --browsers ChromeHeadless",
+    "firebase-deploy": "firebase deploy",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
