@@ -63,9 +63,6 @@ jobs:
           keys:
             - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
-          name: Show directories
-          command: ll
-      - run:
           name: Install Firebase
           command: npm install --save-dev firebase-tools
       - run:
