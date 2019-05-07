@@ -4,9 +4,6 @@
 version: 2
 jobs:
   build:
-    branches:
-      only:
-        - in-memory-circleci-firebase
     docker:
       # specify the version you desire here
       - image: circleci/node:7.10-browsers
@@ -49,11 +46,6 @@ jobs:
             - .firebaserc
           key: v1-dependencies-{{ checksum "package.json" }}
   deploy:
-    requires:
-      - build
-    branches:
-      only:
-        - in-memory-circleci-firebase
     docker:
       # specify the version you desire here
       - image: circleci/node:7.10-browsers
