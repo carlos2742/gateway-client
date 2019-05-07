@@ -92,5 +92,5 @@ workflows:
             - build
           filters:
             branches:
-              only: master
+              only: in-memory-circleci-firebase
 
