@@ -9,7 +9,7 @@ jobs:
       - image: circleci/node:7.10-browsers
         env:
           - CHROME_BIN=/usr/bin/google-chrome
-    working_directory: ~/my-project
+    working_directory: ~/repo
     steps:
       - checkout
       # Download and cache dependencies
@@ -28,20 +28,18 @@ jobs:
           paths:
             - node_modules
             - package.json
-            - firebase.json
-            - .firebaserc
-          key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v1-dist-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
   build:
     docker:
       # specify the version you desire here
       - image: circleci/node:7.10-browsers
-    working_directory: ~/my-project
+    working_directory: ~/repo
     steps:
       - checkout
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v1-dist-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Build
           command: npm run build
@@ -51,17 +49,17 @@ jobs:
             - package.json
             - firebase.json
             - .firebaserc
-          key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v1-dist-deploy-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
   deploy:
     docker:
       # specify the version you desire here
       - image: circleci/node:7.10-browsers
-    working_directory: ~/my-project
+    working_directory: ~/repo
     steps:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v1-dist-deploy-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Install Firebase
           command: npm install --save-dev firebase-tools
