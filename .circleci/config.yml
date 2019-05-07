@@ -48,7 +48,6 @@ jobs:
             - firebase.json
             - .firebaserc
           key: v1-dependencies-{{ checksum "package.json" }}
-
   deploy:
     requires:
       - build
@@ -83,4 +82,15 @@ jobs:
       - run:
           name: Deploy to Firebase
           command: npm run firebase-deploy -- --token=$FIREBASE_TOKEN
+workflows:
+  version: 2
+  -deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
 
