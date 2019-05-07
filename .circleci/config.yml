@@ -76,11 +76,11 @@ workflows:
             - test
           filters:
             branches:
-              only: in-memory-circleci-firebase
+              only: in-memory
       - deploy:
           requires:
             - build
           filters:
             branches:
-              only: in-memory-circleci-firebase
+              only: in-memory
 
