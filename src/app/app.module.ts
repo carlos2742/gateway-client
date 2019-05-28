@@ -15,6 +15,12 @@ import {DevicesService} from './services/devices.service';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import {HttpClientModule} from '@angular/common/http';
 import {MemClientService} from './services/mem-client.service';
+import {StoreModule} from '@ngrx/store';
+import {reducers} from './store/reducers';
+import {EffectsModule} from '@ngrx/effects';
+import {StoreDevtoolsModule} from '@ngrx/store-devtools';
+import {environment} from '../environments/environment';
+import {effects} from './store/effects';
 
 
 @NgModule({
@@ -32,7 +38,13 @@ import {MemClientService} from './services/mem-client.service';
     FormsModule,
     AppRoutingModule,
     HttpClientModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    StoreModule.forRoot(reducers),
+    EffectsModule.forRoot(effects),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+    })
   ],
   providers: [
     GatewaysService,

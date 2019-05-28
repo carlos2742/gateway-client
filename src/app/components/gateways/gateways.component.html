@@ -10,7 +10,7 @@
   </div>
 </div>
 <div class=" text-center pb-5">
-  <div *ngIf="gateways && gateways.length > 0 ; else emptyBlock" class="row mr-0 ml-0 w-100 overflow-auto">
+  <div *ngIf="(gateways$ | async) && (gateways$ | async).length > 0 ; else emptyBlock" class="row mr-0 ml-0 w-100 overflow-auto">
     <table class="table table-striped mt-4 font" >
       <thead>
       <tr>
@@ -21,7 +21,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let gateway of gateways ">
+      <tr *ngFor="let gateway of (gateways$ | async) ">
         <td>{{gateway.serial}}</td>
         <td>{{gateway.name}}</td>
         <td>{{gateway.ipv4}}</td>

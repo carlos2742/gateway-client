@@ -4,6 +4,11 @@ import {ActivatedRoute} from '@angular/router';
 import {NgbActiveModal, NgbModal, NgbModalOptions, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {ENTITIES, FORM_ACTIONS} from '../gateways/gateways.component';
 import {DevicesService} from '../../services/devices.service';
+import * as DeviceAction from '../../store/actions/device.actions';
+import {select, Store} from '@ngrx/store';
+import * as fromStore from '../../store/reducers';
+import * as fromSelector from '../../store/selectors';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-gateway-card',
@@ -12,8 +17,8 @@ import {DevicesService} from '../../services/devices.service';
 })
 export class GatewayCardComponent implements OnInit {
 
-  public gateway: any;
-  public devices: Array<any>;
+  public gateway$: Observable<any>;
+  public devices$: Observable<any>;
 
   public action: FORM_ACTIONS;
   public entity: ENTITIES;
@@ -26,18 +31,10 @@ export class GatewayCardComponent implements OnInit {
 
   public gwId: String;
 
-  constructor(private _gateway: GatewaysService, private _activated: ActivatedRoute, private _modalService: NgbModal,
+  constructor(private store: Store<fromStore.AppState>, private _activated: ActivatedRoute, private _modalService: NgbModal,
               private _device: DevicesService) {
     this.gwId = _activated.snapshot.params['id'];
-    _gateway.gatewayById(this.gwId).subscribe(
-      response => {
-        this.gateway = response['result'];
-        this.getList(this.gwId);
-      },
-      error => {
-        console.log(error);
-      }
-    );
+
     this.data = {gwId: this.gwId};
     this.alert = {
       show: false,
@@ -45,10 +42,15 @@ export class GatewayCardComponent implements OnInit {
       message: ''
     };
     this.dvId = 0;
+    this.gateway$ = store.select(fromSelector.getGateway);
+    this.devices$ = store.select(fromSelector.getDeviceEntities);
   }
 
   ngOnInit() {
     this.entity = ENTITIES.DEVICE;
+    this.store.dispatch(new DeviceAction.LoadGateway(this.gwId));
+    this.store.dispatch(new DeviceAction.Load(this.gwId));
+
   }
 
   openEdit(content, dvId) {
@@ -88,14 +90,6 @@ export class GatewayCardComponent implements OnInit {
     );
   }
 
-  private getList(gatewayId) {
-    this._gateway.deviceList(gatewayId).subscribe(
-      resp => {
-        this.devices = resp['result'];
-      },
-      error => console.log(error)
-    );
-  }
   private open(content) {
     const options: NgbModalOptions = {ariaLabelledBy: 'modal-basic-title'} as NgbModalOptions;
     this.modalRef = this._modalService.open(content, options);
@@ -105,7 +99,7 @@ export class GatewayCardComponent implements OnInit {
         this.alert.status = result['status'];
         this.alert.show = true;
         if (result['status'] === 'success') {
-          this.getList(this.gwId);
+          // this.getList(this.gwId);
         }
       }
     }, (reason) => {
