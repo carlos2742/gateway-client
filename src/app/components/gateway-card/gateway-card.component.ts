@@ -1,14 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {GatewaysService} from '../../services/gateways.service';
 import {ActivatedRoute} from '@angular/router';
 import {NgbActiveModal, NgbModal, NgbModalOptions, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {ENTITIES, FORM_ACTIONS} from '../gateways/gateways.component';
-import {DevicesService} from '../../services/devices.service';
 import * as DeviceAction from '../../store/actions/device.actions';
 import {select, Store} from '@ngrx/store';
 import * as fromStore from '../../store/reducers';
 import * as fromSelector from '../../store/selectors';
 import {Observable} from 'rxjs/Observable';
+import {Alert, Modal} from '../../store/reducers/device.reducer';
 
 @Component({
   selector: 'app-gateway-card',
@@ -20,90 +19,97 @@ export class GatewayCardComponent implements OnInit {
   public gateway$: Observable<any>;
   public devices$: Observable<any>;
 
-  public action: FORM_ACTIONS;
-  public entity: ENTITIES;
-  public data;
+  public alert$: Observable<any>;
+  public modal$: Observable<any>;
 
-  public alert: any;
-
-  public dvId: number;
   public modalRef: NgbModalRef;
 
-  public gwId: String;
+  private deleteDeviceID: string;
 
-  constructor(private store: Store<fromStore.AppState>, private _activated: ActivatedRoute, private _modalService: NgbModal,
-              private _device: DevicesService) {
-    this.gwId = _activated.snapshot.params['id'];
+  constructor(private store: Store<fromStore.AppState>, private _activated: ActivatedRoute, private _modalService: NgbModal) {
+    const gatewayId = _activated.snapshot.params['id'];
 
-    this.data = {gwId: this.gwId};
-    this.alert = {
-      show: false,
-      status: '',
-      message: ''
-    };
-    this.dvId = 0;
-    this.gateway$ = store.select(fromSelector.getGateway);
-    this.devices$ = store.select(fromSelector.getDeviceEntities);
+    this.store.dispatch(new DeviceAction.LoadSelectedGateway(gatewayId));
+    this.store.dispatch(new DeviceAction.LoadDevices(gatewayId));
+
+    this.gateway$ = this.store.select(fromSelector.getSelectedGateway);
+    this.devices$ = this.store.select(fromSelector.getDevices);
+    this.alert$ = this.store.select(fromSelector.getAlert);
+
+    this.modal$ = this.store.select(fromSelector.getModal);
+
   }
 
   ngOnInit() {
-    this.entity = ENTITIES.DEVICE;
-    this.store.dispatch(new DeviceAction.LoadGateway(this.gwId));
-    this.store.dispatch(new DeviceAction.Load(this.gwId));
+    this.alert$.subscribe((alert: Alert) => {
+      if (alert.status === 'success' || alert.status === 'danger') {
+        this.hideModal();
+      }
+    });
 
+    this.modal$.subscribe((modal: Modal) => {
+      this.deleteDeviceID = modal.data.dvId;
+      if (modal.exist) {
+        if (modal.show) {
+          this.open(modal.data.content);
+        } else {
+          this.modalRef.close();
+        }
+      }
+    });
   }
 
-  openEdit(content, dvId) {
-    this.data['dvId'] = dvId;
-    this.action = FORM_ACTIONS.EDIT;
-    this.open(content);
+  openEdit(content, deviceId) {
+    this.store.dispatch(new DeviceAction.LoadSelectedDevice(deviceId));
+    this.store.dispatch(new DeviceAction.ShowModal({
+      entity: ENTITIES.DEVICE,
+      formAction: FORM_ACTIONS.EDIT,
+      data: {
+        content: content,
+        dvId: deviceId
+      }
+    }));
   }
 
-  openRemove(content, dvId) {
-    this.dvId = dvId;
-    this.open(content);
+  openRemove(content, deviceId) {
+    this.store.dispatch(new DeviceAction.ShowModal({
+      entity: ENTITIES.DEVICE,
+      formAction: FORM_ACTIONS.REMOVE,
+      data: {
+        content: content,
+        dvId: deviceId
+      }
+    }));
   }
 
   openAdd(content) {
-    this.action = FORM_ACTIONS.ADD;
-    this.open(content);
+    this.store.dispatch(new DeviceAction.ShowModal({
+      entity: ENTITIES.DEVICE,
+      formAction: FORM_ACTIONS.ADD,
+      data: {
+        content: content
+      }
+    }));
   }
 
-  public closeAlert() {
-    this.alert = {
-      show: false,
-      status: '',
-      message: ''
-    };
+  public hideModal() {
+    this.store.dispatch(new DeviceAction.HideModal);
+  }
+
+  public hideAlert() {
+    this.store.dispatch(new DeviceAction.HideAlert);
   }
 
   public removeDevice() {
-    this._device.remove(this.dvId).subscribe(
-      response => {
-        this.dvId = 0;
-        const message = response['status'] === 'success' ? 'Device removed successfully' : response['message'];
-        this.modalRef.close({action: FORM_ACTIONS.REMOVE, message: message, status: response['status']});
-      },
-      error => {
-        this.modalRef.close({action: FORM_ACTIONS.REMOVE, message: 'Device can\'t be removed', status: 'danger'});
-      }
-    );
+      this.store.dispatch(new DeviceAction.Remove(this.deleteDeviceID));
   }
 
   private open(content) {
     const options: NgbModalOptions = {ariaLabelledBy: 'modal-basic-title'} as NgbModalOptions;
     this.modalRef = this._modalService.open(content, options);
-    this.modalRef.result.then((result) => {
-      if (result['action'] === FORM_ACTIONS.ADD || result['action'] === FORM_ACTIONS.EDIT || result['action'] === FORM_ACTIONS.REMOVE) {
-        this.alert.message = result['message'];
-        this.alert.status = result['status'];
-        this.alert.show = true;
-        if (result['status'] === 'success') {
-          // this.getList(this.gwId);
-        }
-      }
-    }, (reason) => {
-    });
+    this.modalRef.result.then(
+      (result) => {},
+      (reason) => {});
   }
 
 }

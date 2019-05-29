@@ -4,6 +4,14 @@ import {ENTITIES, FORM_ACTIONS} from '../gateways/gateways.component';
 import {DevicesService} from '../../services/devices.service';
 import {NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {GatewaysService} from '../../services/gateways.service';
+import {Store} from '@ngrx/store';
+import * as fromStore from '../../store/reducers';
+import * as fromSelector from '../../store/selectors';
+import {Observable} from 'rxjs/Observable';
+import {Modal} from '../../store/reducers/device.reducer';
+import {Gateway} from '../../models/gateway.model';
+import * as DeviceAction from '../../store/actions/device.actions';
+import {Device} from '../../models/device.model';
 
 export enum DEVICES_STATUS {
   ONLINE = 'online',
@@ -17,41 +25,38 @@ export enum DEVICES_STATUS {
 })
 export class FormDevComponent implements OnInit {
 
-  @Input() entity: ENTITIES;
-  @Input() action: FORM_ACTIONS;
-  @Input() params: any;
-  @Input() modalRef: NgbModalRef;
-
   public title: String;
-  public gwId: String;
-  public FORM_ACTION_ENUM;
-
   public customform;
-  public device;
+  public params$: Observable<any>;
 
-  constructor(private _device: DevicesService, private _gateway: GatewaysService, private _formBuilder: FormBuilder) {
+  private modalRef: NgbModalRef;
+  private gatewayId: String;
+  private device: Device;
+  private action: FORM_ACTIONS;
+
+  constructor(private store: Store<fromStore.AppState>, private _device: DevicesService, private _gateway: GatewaysService, private _formBuilder: FormBuilder) {
     this.device = null;
-    this.FORM_ACTION_ENUM = FORM_ACTIONS;
+
+    this.params$ = this.store.select(fromSelector.getComposeModalData);
   }
 
   ngOnInit() {
-    this.title = `${this.action} ${this.entity}`;
-    this.gwId = this.params['gwId'];
+    this.params$.subscribe(data => {
+      const modal: Modal = data['modal'];
+      const gateway: Gateway = data['gateway'];
 
-    if (this.action === FORM_ACTIONS.EDIT) {
-      const dvId = this.params['dvId'];
-      this._device.deviceById(dvId).subscribe(
-        response => {
-          this.device = response['result'];
-          this.title += ` ${this.device.uid}`;
-          this.createForm(this.device.uid, this.device.vendor, this.device.status);
-        },
-        error => console.log(error)
-      );
-    } else {
-      this.createForm();
-    }
+      this.gatewayId = gateway._id;
+      this.title = `${modal.action} ${modal.entityName}`;
+      this.action = modal.action as FORM_ACTIONS;
 
+      if (this.action === FORM_ACTIONS.EDIT) {
+        this.device = modal.selectedDevice.entity;
+        this.title += ` ${this.device.uid}`;
+        this.createForm(this.device.uid, this.device.vendor, this.device.status);
+      } else {
+        this.createForm();
+      }
+    });
   }
 
   public submit() {
@@ -66,16 +71,16 @@ export class FormDevComponent implements OnInit {
 
     const data = this.customform.value;
     if (this.action === FORM_ACTIONS.EDIT) {
-      this.editDevice(this.device['_id'], data);
+      this.editDevice(this.device._id, data);
     } else {
       data['created'] = new Date();
-      this.addDevice(this.gwId, data);
+      this.addDevice(this.gatewayId, data);
     }
   }
 
-  private createForm(uid = '', vendor = '', status = DEVICES_STATUS.ONLINE) {
+  private createForm(uid = -1, vendor = '', status = DEVICES_STATUS.ONLINE) {
     this.customform = this._formBuilder.group({
-      'uid': new FormControl(uid, [Validators.required, Validators.pattern('^\\d+$')]),
+      'uid': new FormControl(uid < 0 ? '' : uid, [Validators.required, Validators.pattern('^\\d+$')]),
       'vendor': new FormControl(vendor, [Validators.required]),
       'status': new FormControl(status),
     });
@@ -107,6 +112,10 @@ export class FormDevComponent implements OnInit {
 
   private closeModal(action, status, message) {
     this.modalRef.close({action: action, status: status, message: message});
+  }
+
+  public hideModal() {
+    this.store.dispatch(new DeviceAction.HideModal);
   }
 
 }

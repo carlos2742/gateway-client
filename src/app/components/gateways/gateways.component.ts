@@ -7,6 +7,7 @@ import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 
 export enum FORM_ACTIONS {
+  NONE = 'None',
   ADD = 'Add',
   EDIT = 'Edit',
   REMOVE = 'Remove',

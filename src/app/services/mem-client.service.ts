@@ -136,7 +136,7 @@ export class MemClientService {
 
   public removeDevice(deviceId) {
     const index = this.devices.findIndex( item => item._id === deviceId);
-    const device = this.devices.splice(index, 1);
+    const device = this.devices.splice(index, 1)[0];
     return this.createObservableResult({status: 'success', result: device});
   }
 }

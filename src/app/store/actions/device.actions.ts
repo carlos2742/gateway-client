@@ -1,12 +1,15 @@
 import {Action} from '@ngrx/store';
 
 export enum ActionTypes {
-  Load = '[Device] Load',
-  LoadFail = '[Device] Load Fail',
-  LoadSuccess = '[Device] Load Success',
-  LoadGateway = '[Device] Load Device-Gateway',
-  LoadGatewayFail = '[Device] Load Device-Gateway Fail',
-  LoadGatewaySuccess = '[Device] Load Device-Gateway Success',
+  LoadDevices = '[Device] Load Devices',
+  LoadDevicesFail = '[Device] Load Devices Fail',
+  LoadDevicesSuccess = '[Device] Load Devices Success',
+  LoadSelectedGateway = '[Device] Load Selected Gateway',
+  LoadSelectedGatewayFail = '[Device] Load Selected Gateway Fail',
+  LoadSelectedGatewaySuccess = '[Device] Load Selected Gateway Success',
+  LoadSelectedDevice = '[Device] Load Selected Device',
+  LoadSelectedDeviceFail = '[Device] Load Selected Device Fail',
+  LoadSelectedDeviceSuccess = '[Device] Load Selected Device Success',
   Add = '[Device] Add',
   AddFail = '[Device] Add Fail',
   AddSuccess = '[Device] Add Success',
@@ -15,36 +18,54 @@ export enum ActionTypes {
   EditSuccess = '[Device] Edit Success',
   Remove = '[Device] Remove',
   RemoveFail = '[Device] Remove Fail',
-  RemoveSuccess = '[Device] Remove Success'
+  RemoveSuccess = '[Device] Remove Success',
+  ShowModal = '[Device] Show Modal',
+  HideModal = '[Device] Hide Modal',
+  HideAlert = '[Device] Hide Alert',
 }
 
-export class Load implements Action {
-  readonly type = ActionTypes.Load;
+export class LoadDevices implements Action {
+  readonly type = ActionTypes.LoadDevices;
   constructor(public payload: any) {}
 }
 
-export class LoadFail implements Action {
-  readonly type = ActionTypes.LoadFail;
+export class LoadDevicesFail implements Action {
+  readonly type = ActionTypes.LoadDevicesFail;
   constructor(public payload: any) {}
 }
 
-export class LoadSuccess implements Action {
-  readonly type = ActionTypes.LoadSuccess;
+export class LoadDevicesSuccess implements Action {
+  readonly type = ActionTypes.LoadDevicesSuccess;
   constructor(public payload: any) {}
 }
 
-export class LoadGateway implements Action {
-  readonly type = ActionTypes.LoadGateway;
+export class LoadSelectedGateway implements Action {
+  readonly type = ActionTypes.LoadSelectedGateway;
   constructor(public payload: any) {}
 }
 
-export class LoadGatewayFail implements Action {
-  readonly type = ActionTypes.LoadGatewayFail;
+export class LoadSelectedGatewayFail implements Action {
+  readonly type = ActionTypes.LoadSelectedGatewayFail;
   constructor(public payload: any) {}
 }
 
-export class LoadGatewaySuccess implements Action {
-  readonly type = ActionTypes.LoadGatewaySuccess;
+export class LoadSelectedGatewaySuccess implements Action {
+  readonly type = ActionTypes.LoadSelectedGatewaySuccess;
+  constructor(public payload: any) {}
+}
+
+export class LoadSelectedDevice implements Action {
+  readonly type = ActionTypes.LoadSelectedDevice;
+  constructor(public payload: any) {}
+}
+
+export class LoadSelectedDeviceFail implements Action {
+  readonly type = ActionTypes.LoadSelectedDeviceFail;
+  constructor(public payload: any) {}
+}
+
+export class LoadSelectedDeviceSuccess implements Action {
+  readonly type = ActionTypes.LoadSelectedDeviceSuccess;
   constructor(public payload: any) {}
 }
 
@@ -78,6 +99,7 @@ export class EditSuccess implements Action {
 
 export class Remove implements Action {
   readonly type = ActionTypes.Remove;
+  constructor(public payload: any) {}
 }
 
 export class RemoveFail implements Action {
@@ -90,12 +112,28 @@ export class RemoveSuccess implements Action {
   constructor(public payload: any) {}
 }
 
-export type ActionsUnion = Load |
-  LoadFail |
-  LoadSuccess |
-  LoadGateway |
-  LoadGatewayFail |
-  LoadGatewaySuccess |
+export class ShowModal implements Action {
+  readonly type = ActionTypes.ShowModal;
+  constructor(public payload: any) {}
+}
+
+export class HideModal implements Action {
+  readonly type = ActionTypes.HideModal;
+}
+
+export class HideAlert implements Action {
+  readonly type = ActionTypes.HideAlert;
+}
+
+export type ActionsUnion = LoadDevices |
+  LoadDevicesFail |
+  LoadDevicesSuccess |
+  LoadSelectedGateway |
+  LoadSelectedGatewayFail |
+  LoadSelectedGatewaySuccess |
+  LoadSelectedDevice |
+  LoadSelectedDeviceFail |
+  LoadSelectedDeviceSuccess |
   Add |
   AddFail |
   AddSuccess |
@@ -104,4 +142,7 @@ export type ActionsUnion = Load |
   EditSuccess |
   Remove |
   RemoveFail |
-  RemoveSuccess;
+  RemoveSuccess |
+  ShowModal |
+  HideModal |
+  HideAlert;
