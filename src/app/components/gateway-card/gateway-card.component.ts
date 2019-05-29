@@ -101,7 +101,7 @@ export class GatewayCardComponent implements OnInit {
   }
 
   public removeDevice() {
-      this.store.dispatch(new DeviceAction.Remove(this.deleteDeviceID));
+      this.store.dispatch(new DeviceAction.RemoveDevice(this.deleteDeviceID));
   }
 
   private open(content) {

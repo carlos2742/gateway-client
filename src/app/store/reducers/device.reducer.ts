@@ -139,20 +139,73 @@ export function reducer(
         }
       };
     }
-    case fromDevice.ActionTypes.Add: {
-      console.log(fromDevice.ActionTypes.Add);
+    case fromDevice.ActionTypes.AddDevice: {
+      console.log(fromDevice.ActionTypes.AddDevice);
       return state;
     }
-    case fromDevice.ActionTypes.Edit: {
-      console.log(fromDevice.ActionTypes.Edit);
+    case fromDevice.ActionTypes.AddDeviceSuccess: {
+      console.log(fromDevice.ActionTypes.AddDeviceSuccess);
+      const entity: Device = action.payload['result'];
+      return {
+        ...state,
+        alert: {
+          status: 'success',
+          message: 'The device was added successfully',
+          show: true
+        },
+        entities: [...state.entities, entity]
+      };
+    }
+    case fromDevice.ActionTypes.AddDeviceFail: {
+      console.log(fromDevice.ActionTypes.AddDeviceSuccess);
+      return {
+        ...state,
+        alert: {
+          status: 'danger',
+          message: 'The device could not be added',
+          show: true
+        }
+      };
+    }
+    case fromDevice.ActionTypes.EditDevice: {
+      console.log(fromDevice.ActionTypes.EditDevice);
       return state;
     }
-    case fromDevice.ActionTypes.Remove: {
-      console.log(fromDevice.ActionTypes.Remove);
+    case fromDevice.ActionTypes.EditDeviceSuccess: {
+      console.log(fromDevice.ActionTypes.EditDeviceSuccess);
+      const entity = action.payload['result'];
+      const entityIndex = state.entities.findIndex( (item: Device) => item._id === entity._id);
+      return {
+        ...state,
+        alert: {
+          status: 'success',
+          message: 'The device was updated successfully',
+          show: true
+        },
+        entities: [
+          ...state.entities.slice(0, entityIndex),
+          entity,
+          ...state.entities.slice(entityIndex + 1)
+        ]
+      };
+    }
+    case fromDevice.ActionTypes.EditDeviceFail: {
+      console.log(fromDevice.ActionTypes.EditDeviceFail);
+      return {
+        ...state,
+        alert: {
+          status: 'danger',
+          message: 'The device could not be updated',
+          show: true
+        }
+      };
+    }
+    case fromDevice.ActionTypes.RemoveDevice: {
+      console.log(fromDevice.ActionTypes.RemoveDevice);
       return state;
     }
-    case fromDevice.ActionTypes.RemoveSuccess: {
-      console.log(fromDevice.ActionTypes.RemoveSuccess);
+    case fromDevice.ActionTypes.RemoveDeviceSuccess: {
+      console.log(fromDevice.ActionTypes.RemoveDeviceSuccess);
       const itemDeleted: Device = action.payload.result;
       const index = state.entities.findIndex( item => item._id === itemDeleted._id);
       const entities = state.entities.slice(0);
@@ -167,8 +220,8 @@ export function reducer(
         entities: entities
       };
     }
-    case fromDevice.ActionTypes.RemoveFail: {
-      console.log(fromDevice.ActionTypes.RemoveFail);
+    case fromDevice.ActionTypes.RemoveDeviceFail: {
+      console.log(fromDevice.ActionTypes.RemoveDeviceFail);
       return {
         ...state,
         alert: {

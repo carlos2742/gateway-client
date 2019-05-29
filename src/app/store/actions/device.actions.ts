@@ -10,15 +10,15 @@ export enum ActionTypes {
   LoadSelectedDevice = '[Device] Load Selected Device',
   LoadSelectedDeviceFail = '[Device] Load Selected Device Fail',
   LoadSelectedDeviceSuccess = '[Device] Load Selected Device Success',
-  Add = '[Device] Add',
-  AddFail = '[Device] Add Fail',
-  AddSuccess = '[Device] Add Success',
-  Edit = '[Device] Edit',
-  EditFail = '[Device] Edit Fail',
-  EditSuccess = '[Device] Edit Success',
-  Remove = '[Device] Remove',
-  RemoveFail = '[Device] Remove Fail',
-  RemoveSuccess = '[Device] Remove Success',
+  AddDevice = '[Device] Add',
+  AddDeviceFail = '[Device] Add Fail',
+  AddDeviceSuccess = '[Device] Add Success',
+  EditDevice = '[Device] Edit',
+  EditDeviceFail = '[Device] Edit Fail',
+  EditDeviceSuccess = '[Device] Edit Success',
+  RemoveDevice = '[Device] Remove',
+  RemoveDeviceFail = '[Device] Remove Fail',
+  RemoveDeviceSuccess = '[Device] Remove Success',
   ShowModal = '[Device] Show Modal',
   HideModal = '[Device] Hide Modal',
   HideAlert = '[Device] Hide Alert',
@@ -69,46 +69,48 @@ export class LoadSelectedDeviceSuccess implements Action {
   constructor(public payload: any) {}
 }
 
-export class Add implements Action {
-  readonly type = ActionTypes.Add;
-}
-
-export class AddFail implements Action {
-  readonly type = ActionTypes.AddFail;
+export class AddDevice implements Action {
+  readonly type = ActionTypes.AddDevice;
   constructor(public payload: any) {}
 }
 
-export class AddSuccess implements Action {
-  readonly type = ActionTypes.AddSuccess;
+export class AddDeviceFail implements Action {
+  readonly type = ActionTypes.AddDeviceFail;
   constructor(public payload: any) {}
 }
 
-export class Edit implements Action {
-  readonly type = ActionTypes.Edit;
-}
-
-export class EditFail implements Action {
-  readonly type = ActionTypes.EditFail;
+export class AddDeviceSuccess implements Action {
+  readonly type = ActionTypes.AddDeviceSuccess;
   constructor(public payload: any) {}
 }
 
-export class EditSuccess implements Action {
-  readonly type = ActionTypes.EditSuccess;
+export class EditDevice implements Action {
+  readonly type = ActionTypes.EditDevice;
   constructor(public payload: any) {}
 }
 
-export class Remove implements Action {
-  readonly type = ActionTypes.Remove;
+export class EditDeviceFail implements Action {
+  readonly type = ActionTypes.EditDeviceFail;
   constructor(public payload: any) {}
 }
 
-export class RemoveFail implements Action {
-  readonly type = ActionTypes.RemoveFail;
+export class EditDeviceSuccess implements Action {
+  readonly type = ActionTypes.EditDeviceSuccess;
   constructor(public payload: any) {}
 }
 
-export class RemoveSuccess implements Action {
-  readonly type = ActionTypes.RemoveSuccess;
+export class RemoveDevice implements Action {
+  readonly type = ActionTypes.RemoveDevice;
+  constructor(public payload: any) {}
+}
+
+export class RemoveDeviceFail implements Action {
+  readonly type = ActionTypes.RemoveDeviceFail;
+  constructor(public payload: any) {}
+}
+
+export class RemoveDeviceSuccess implements Action {
+  readonly type = ActionTypes.RemoveDeviceSuccess;
   constructor(public payload: any) {}
 }
 
@@ -134,15 +136,15 @@ export type ActionsUnion = LoadDevices |
   LoadSelectedDevice |
   LoadSelectedDeviceFail |
   LoadSelectedDeviceSuccess |
-  Add |
-  AddFail |
-  AddSuccess |
-  Edit |
-  EditFail |
-  EditSuccess |
-  Remove |
-  RemoveFail |
-  RemoveSuccess |
+  AddDevice |
+  AddDeviceFail |
+  AddDeviceSuccess |
+  EditDevice |
+  EditDeviceFail |
+  EditDeviceSuccess |
+  RemoveDevice |
+  RemoveDeviceFail |
+  RemoveDeviceSuccess |
   ShowModal |
   HideModal |
   HideAlert;

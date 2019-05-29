@@ -86,32 +86,12 @@ export class FormDevComponent implements OnInit {
     });
   }
 
-  private editDevice(id, data) {
-    this._device.edit(id, data).subscribe(
-      response => {
-        const message = response['status'] === 'success' ? `Device was updated.` : response['message'];
-        this.closeModal(FORM_ACTIONS.EDIT, response['status'], message);
-      },
-      error => {
-        this.closeModal(FORM_ACTIONS.EDIT, error['status'], error['message']);
-      }
-    );
+  private editDevice(deviceId, data) {
+    this.store.dispatch(new DeviceAction.EditDevice({deviceId, data}));
   }
 
   private addDevice(gatewayId, data) {
-    this._gateway.addDevice(gatewayId, data).subscribe(
-      response => {
-        const message = response['status'] === 'success' ? 'Device was added successfully.' : response['message'];
-        this.closeModal(FORM_ACTIONS.ADD, response['status'], message);
-      },
-      error => {
-        this.closeModal(FORM_ACTIONS.ADD, error['status'], error['message']);
-      }
-    );
-  }
-
-  private closeModal(action, status, message) {
-    this.modalRef.close({action: action, status: status, message: message});
+    this.store.dispatch(new DeviceAction.AddDevice({gatewayId, data}));
   }
 
   public hideModal() {

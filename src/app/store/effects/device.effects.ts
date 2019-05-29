@@ -43,13 +43,43 @@ export class DeviceEffects {
   @Effect()
   removeDevice$ = this.actions$
     .pipe(
-      ofType(DeviceActions.ActionTypes.Remove),
-      map((action: DeviceActions.Remove) => action.payload),
+      ofType(DeviceActions.ActionTypes.RemoveDevice),
+      map((action: DeviceActions.RemoveDevice) => action.payload),
       switchMap(deviceId => {
           return this._device.remove(deviceId)
             .pipe(
-              map(devices => new DeviceActions.RemoveSuccess(devices),
-                catchError(error => of(new DeviceActions.RemoveFail(error)))
+              map(devices => new DeviceActions.RemoveDeviceSuccess(devices),
+                catchError(error => of(new DeviceActions.RemoveDeviceFail(error)))
+              ));
+        }
+      )
+    );
+
+  @Effect()
+  addDevice$ = this.actions$
+    .pipe(
+      ofType(DeviceActions.ActionTypes.AddDevice),
+      map((action: DeviceActions.AddDevice) => action.payload),
+      switchMap(payload => {
+          return this._gateway.addDevice(payload.gatewayId, payload.data)
+            .pipe(
+              map(device => new DeviceActions.AddDeviceSuccess(device),
+                catchError(error => of(new DeviceActions.AddDeviceFail(error)))
+              ));
+        }
+      )
+    );
+
+  @Effect()
+  editDevice$ = this.actions$
+    .pipe(
+      ofType(DeviceActions.ActionTypes.EditDevice),
+      map((action: DeviceActions.EditDevice) => action.payload),
+      switchMap(payload => {
+          return this._device.edit(payload.deviceId, payload.data)
+            .pipe(
+              map(device => new DeviceActions.EditDeviceSuccess(device),
+                catchError(error => of(new DeviceActions.EditDeviceFail(error)))
               ));
         }
       )
