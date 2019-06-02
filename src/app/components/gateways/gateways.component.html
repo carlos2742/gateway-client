@@ -1,6 +1,6 @@
 <div class="text-center mb-2 mt-3">
-  <ngb-alert [type]="alert.status" *ngIf="alert.show" (close)="closeAlert()">
-    {{alert.message}}
+  <ngb-alert [type]="(alert$ | async).status" *ngIf="(alert$ | async).show" (close)="hideAlert()">
+    {{(alert$ | async).message}}
   </ngb-alert>
   <div class="d-flex justify-content-between align-items-center">
     <h3 class="mb-0">
@@ -42,5 +42,5 @@
 </div>
 
 <ng-template #content let-d="dismiss" let-c="close">
-  <app-form-gw [entity]="entity" [action]="action" [modalRef]="modalRef" [params]="data"></app-form-gw>
+  <app-form-gw></app-form-gw>
 </ng-template>

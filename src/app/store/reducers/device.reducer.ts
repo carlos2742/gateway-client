@@ -8,8 +8,8 @@ export interface Alert {
   message: string;
 }
 
-export interface DeviceEntity {
-  entity: Device;
+export interface SelectedEntity {
+  entity: Device | Gateway;
   loading: boolean;
   loaded: boolean;
 }
@@ -19,11 +19,10 @@ export interface Modal {
   entityName: string;
   data: any;
   action: string;
-  exist: boolean;
-  selectedDevice: DeviceEntity;
+  selectedEntity: SelectedEntity;
 }
 
-export interface DeviceGateway {
+export interface SelectedGateway {
   properties: Gateway;
   loading: boolean;
   loaded: boolean;
@@ -33,7 +32,7 @@ export interface State {
   entities: Array<Device>;
   loading: boolean;
   loaded: boolean;
-  gateway: DeviceGateway;
+  gateway: SelectedGateway;
   alert: Alert;
   modal: Modal;
 }
@@ -54,11 +53,10 @@ export const initialState: State = {
   },
   modal: {
     entityName: '',
-    exist: false,
     show: false,
     action: 'none',
     data: {},
-    selectedDevice: {
+    selectedEntity: {
       entity: {},
       loaded: false,
       loading: false
@@ -116,8 +114,8 @@ export function reducer(
         ...state,
         modal: {
           ...state.modal,
-          selectedDevice: {
-            ...state.modal.selectedDevice,
+          selectedEntity: {
+            ...state.modal.selectedEntity,
             loading: true,
             loaded: false,
           }
@@ -130,18 +128,14 @@ export function reducer(
         ...state,
         modal: {
           ...state.modal,
-          selectedDevice: {
-            ...state.modal.selectedDevice,
+          selectedEntity: {
+            ...state.modal.selectedEntity,
             loading: false,
             loaded: true,
             entity: action.payload.result
           }
         }
       };
-    }
-    case fromDevice.ActionTypes.AddDevice: {
-      console.log(fromDevice.ActionTypes.AddDevice);
-      return state;
     }
     case fromDevice.ActionTypes.AddDeviceSuccess: {
       console.log(fromDevice.ActionTypes.AddDeviceSuccess);
@@ -166,10 +160,6 @@ export function reducer(
           show: true
         }
       };
-    }
-    case fromDevice.ActionTypes.EditDevice: {
-      console.log(fromDevice.ActionTypes.EditDevice);
-      return state;
     }
     case fromDevice.ActionTypes.EditDeviceSuccess: {
       console.log(fromDevice.ActionTypes.EditDeviceSuccess);
@@ -199,10 +189,6 @@ export function reducer(
           show: true
         }
       };
-    }
-    case fromDevice.ActionTypes.RemoveDevice: {
-      console.log(fromDevice.ActionTypes.RemoveDevice);
-      return state;
     }
     case fromDevice.ActionTypes.RemoveDeviceSuccess: {
       console.log(fromDevice.ActionTypes.RemoveDeviceSuccess);
@@ -237,7 +223,6 @@ export function reducer(
         ...state,
         modal: {
           ...state.modal,
-          exist: true,
           show: true,
           entityName: action.payload.entity,
           action: action.payload.formAction,
@@ -277,10 +262,6 @@ export function reducer(
 }
 
 export const getDevices = (state: State) => state.entities;
-export const isLoadingDevices = (state: State) => state.loading;
-export const areDevicesLoaded = (state: State) => state.loaded;
 export const getSelectedGateway = (state: State) => state.gateway.properties;
-export const isLoadingSelectedGateway = (state: State) => state.gateway.loading;
-export const isSelectedGatewayLoaded = (state: State) => state.gateway.loaded;
 export const getAlert = (state: State) => state.alert;
 export const getModal = (state: State) => state.modal;

@@ -1,9 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
-import {ENTITIES, FORM_ACTIONS} from '../gateways/gateways.component';
-import {DevicesService} from '../../services/devices.service';
-import {NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
-import {GatewaysService} from '../../services/gateways.service';
+import {FORM_ACTIONS} from '../gateways/gateways.component';
 import {Store} from '@ngrx/store';
 import * as fromStore from '../../store/reducers';
 import * as fromSelector from '../../store/selectors';
@@ -29,12 +26,11 @@ export class FormDevComponent implements OnInit {
   public customform;
   public params$: Observable<any>;
 
-  private modalRef: NgbModalRef;
   private gatewayId: String;
   private device: Device;
   private action: FORM_ACTIONS;
 
-  constructor(private store: Store<fromStore.AppState>, private _device: DevicesService, private _gateway: GatewaysService, private _formBuilder: FormBuilder) {
+  constructor(private store: Store<fromStore.AppState>, private _formBuilder: FormBuilder) {
     this.device = null;
 
     this.params$ = this.store.select(fromSelector.getComposeModalData);
@@ -50,7 +46,7 @@ export class FormDevComponent implements OnInit {
       this.action = modal.action as FORM_ACTIONS;
 
       if (this.action === FORM_ACTIONS.EDIT) {
-        this.device = modal.selectedDevice.entity;
+        this.device = modal.selectedEntity.entity;
         this.title += ` ${this.device.uid}`;
         this.createForm(this.device.uid, this.device.vendor, this.device.status);
       } else {

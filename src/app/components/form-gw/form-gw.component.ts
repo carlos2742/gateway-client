@@ -3,6 +3,13 @@ import {ENTITIES, FORM_ACTIONS} from '../gateways/gateways.component';
 import {GatewaysService} from '../../services/gateways.service';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import {Observable} from 'rxjs/Observable';
+import {Store} from '@ngrx/store';
+import * as fromStore from '../../store/reducers';
+import * as fromSelector from '../../store/selectors';
+import {Modal} from '../../store/reducers/device.reducer';
+import {Gateway} from '../../models/gateway.model';
+import * as GatewayAction from '../../store/actions/gateway.actions';
 
 @Component({
   selector: 'app-form-gw',
@@ -11,38 +18,32 @@ import {NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 })
 export class FormGwComponent implements OnInit {
 
-  @Input() entity: ENTITIES;
-  @Input() action: FORM_ACTIONS;
-  @Input() params: any;
-  @Input() modalRef: NgbModalRef;
-
   public title: String;
   public id: String;
-  public FORM_ACTION_ENUM;
+  private action: FORM_ACTIONS;
+  private gatewayId: String;
 
   public customform;
 
-  constructor(private _gateway: GatewaysService, private _formBuilder: FormBuilder) {
-    this.FORM_ACTION_ENUM = FORM_ACTIONS;
+  public modal$: Observable<any>;
+
+  constructor(private store: Store<fromStore.AppState>, private _formBuilder: FormBuilder) {
+    this.modal$ = this.store.select(fromSelector.getGatewayModal);
   }
 
   ngOnInit() {
-    this.title = `${this.action} ${this.entity}`;
-    this.id = this.params['id'];
+    this.modal$.subscribe((modal: Modal) => {
+      this.title = `${modal.action} ${modal.entityName}`;
+      const gateway: Gateway = modal.selectedEntity.entity;
+      this.gatewayId = gateway._id;
+      this.action = modal.action as FORM_ACTIONS;
 
-    if (this.action === FORM_ACTIONS.EDIT) {
-      this._gateway.gatewayById(this.id).subscribe(
-        response => {
-          const gateway = response['result'];
-          this.createForm(gateway.serial, gateway.name, gateway.ipv4);
-        },
-        error => {
-          console.log(error);
-        }
-      );
-    } else {
-      this.createForm();
-    }
+      if (this.action === FORM_ACTIONS.EDIT) {
+        this.createForm(gateway.serial, gateway.name, gateway.ipv4);
+      } else {
+        this.createForm();
+      }
+    });
   }
 
   public submit() {
@@ -57,7 +58,7 @@ export class FormGwComponent implements OnInit {
 
     const data = this.customform.value;
     if (this.action === FORM_ACTIONS.EDIT) {
-      this.editGateway(this.id, data);
+      this.editGateway(this.gatewayId, data);
     } else {
       this.addGateway(data);
     }
@@ -71,32 +72,15 @@ export class FormGwComponent implements OnInit {
     });
   }
 
-  private editGateway(id, data) {
-    this._gateway.edit(id, data).subscribe(
-      response => {
-        const message = response['status'] === 'success' ? 'Gateway was updated.' : response['message'];
-        this.closeModal(FORM_ACTIONS.EDIT, response['status'], message);
-      },
-      error => {
-        this.closeModal(FORM_ACTIONS.EDIT, error['status'], error['message']);
-      }
-    );
+  private editGateway(gatewayId, data) {
+    this.store.dispatch(new GatewayAction.EditGateway({gatewayId, data}));
   }
 
   private addGateway(data) {
-    this._gateway.add(data).subscribe(
-      response => {
-        const message = response['status'] === 'success' ? 'Gateway was added successfully.' : response['message'];
-        this.closeModal(FORM_ACTIONS.ADD, response['status'], message);
-      },
-      error => {
-        this.closeModal(FORM_ACTIONS.ADD, error['status'], error['message']);
-      }
-    );
+    this.store.dispatch(new GatewayAction.AddGateway(data));
   }
 
-  private closeModal(action, status, message) {
-    this.modalRef.close({action: action, status: status, message: message});
+  public hideModal() {
+    this.store.dispatch(new GatewayAction.HideModal);
   }
-
 }

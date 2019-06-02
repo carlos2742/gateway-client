@@ -1,13 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {NgbActiveModal, NgbModal, NgbModalOptions, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal, NgbModalOptions, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {ENTITIES, FORM_ACTIONS} from '../gateways/gateways.component';
 import * as DeviceAction from '../../store/actions/device.actions';
-import {select, Store} from '@ngrx/store';
+import {Store} from '@ngrx/store';
 import * as fromStore from '../../store/reducers';
 import * as fromSelector from '../../store/selectors';
 import {Observable} from 'rxjs/Observable';
 import {Alert, Modal} from '../../store/reducers/device.reducer';
+import {isUndefined} from 'util';
 
 @Component({
   selector: 'app-gateway-card',
@@ -22,7 +23,7 @@ export class GatewayCardComponent implements OnInit {
   public alert$: Observable<any>;
   public modal$: Observable<any>;
 
-  public modalRef: NgbModalRef;
+  private modalRef: NgbModalRef;
 
   private deleteDeviceID: string;
 
@@ -34,10 +35,9 @@ export class GatewayCardComponent implements OnInit {
 
     this.gateway$ = this.store.select(fromSelector.getSelectedGateway);
     this.devices$ = this.store.select(fromSelector.getDevices);
-    this.alert$ = this.store.select(fromSelector.getAlert);
 
-    this.modal$ = this.store.select(fromSelector.getModal);
-
+    this.alert$ = this.store.select(fromSelector.getDeviceAlert);
+    this.modal$ = this.store.select(fromSelector.getDeviceModal);
   }
 
   ngOnInit() {
@@ -49,17 +49,17 @@ export class GatewayCardComponent implements OnInit {
 
     this.modal$.subscribe((modal: Modal) => {
       this.deleteDeviceID = modal.data.dvId;
-      if (modal.exist) {
         if (modal.show) {
           this.open(modal.data.content);
         } else {
-          this.modalRef.close();
+          if (!isUndefined(this.modalRef)){
+            this.modalRef.close();
+          }
         }
-      }
     });
   }
 
-  openEdit(content, deviceId) {
+  public openEdit(content, deviceId) {
     this.store.dispatch(new DeviceAction.LoadSelectedDevice(deviceId));
     this.store.dispatch(new DeviceAction.ShowModal({
       entity: ENTITIES.DEVICE,
@@ -71,7 +71,7 @@ export class GatewayCardComponent implements OnInit {
     }));
   }
 
-  openRemove(content, deviceId) {
+  public openRemove(content, deviceId) {
     this.store.dispatch(new DeviceAction.ShowModal({
       entity: ENTITIES.DEVICE,
       formAction: FORM_ACTIONS.REMOVE,
@@ -82,7 +82,7 @@ export class GatewayCardComponent implements OnInit {
     }));
   }
 
-  openAdd(content) {
+  public openAdd(content) {
     this.store.dispatch(new DeviceAction.ShowModal({
       entity: ENTITIES.DEVICE,
       formAction: FORM_ACTIONS.ADD,
